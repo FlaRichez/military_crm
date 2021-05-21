@@ -15,13 +15,13 @@ class DocumentModelViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         group = self.request.user.groups.all()[0].name
         if group == 'general':
-            docs = Document.objects.filter(document_root__in=['public','private','secret'])
+            docs = Document.objects.filter(document_root__in=['public','private','secret'],status='active')
         if group == 'president':
             docs = Document.objects.all()
         if group == 'sergeant':
-            docs = Document.objects.filter(document_root__in=['public','private'])
+            docs = Document.objects.filter(document_root__in=['public','private'],status='active')
         if group == 'user':
-            docs = Document.objects.filter(document_root__in=['public'])
+            docs = Document.objects.filter(document_root__in=['public'],status='active')
         return docs
 
     def perform_create(self,serializer):

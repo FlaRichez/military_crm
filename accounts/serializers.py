@@ -8,11 +8,11 @@ from .services import mailing
 
 
 class CarSerializer(serializers.ModelSerializer):
-    id = serializers.IntegerField()
+    car_id = serializers.IntegerField(source='id',required=False)
 
     class Meta:
         model = Car
-        fields = ['id','mark','model','year','number','color','type']
+        fields = ['car_id','mark','model','year','number','color','type']
 
 
 class EducationSerializer(serializers.ModelSerializer):

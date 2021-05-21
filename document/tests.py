@@ -87,20 +87,29 @@ class TestDocumentRulesGet(APITestCase):
         self.assertEqual(self.response.status_code,status.HTTP_201_CREATED)
 
 
-class TestDateExpiredDocument(APITestCase):
+class TestDataExpiredDocument(APITestCase):
     def setUp(self):
         self.client = APIClient()
-        self.url = reverse('document-detail')
-        Document.objects.create(title='not expired doc',
-                                date_expired="2021-05-22",document_root='private')
-        Document.objects.create(title='expired doc',
-                                date_expired="2021-05-09",document_root='private',status='dead')
+        self.doc1 = Document.objects.create(title='not expired doc',
+                                data_expired="2021-05-22",document_root='private')
+        self.doc2 = Document.objects.create(title='expired doc',
+                                data_expired="2021-05-09",document_root='private',status='dead')
         populate_test_db_users(User, Group)
 
-
     def test_get_not_expired(self):
-        self.client.login(username)
-    pass
+        self.url = reverse('documents-detail',kwargs={'pk':self.doc1.id})
+        self.client.login(username='general',password='123456')
+        self.response = self.client.get(self.url)
+        print(self.response.json())
+        self.assertContains(self.response,'active',status_code=200)
+
+    def test_get_expired(self):
+        self.url = reverse('documents-detail', kwargs={'pk': self.doc2.id})
+        self.client.login(username='general',password='123456')
+        self.response = self.client.get(self.url)
+        print(self.response.json())
+        self.assertContains(self.response,'Страница не найдена',status_code=404)
+
 
 
 

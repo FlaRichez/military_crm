@@ -2,6 +2,8 @@ from django.shortcuts import render
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.response import Response
+
+from .permissions import RegisterPermission
 from .serializers import *
 from rest_framework import viewsets,status
 from rest_framework.views import APIView
@@ -29,10 +31,11 @@ class DossierModelViewSet(APIView):
     def delete(self,request,*args,**kwargs):
         dossier = Dossier.objects.get(user=request.user)
         dossier.delete()
-        return Response({"data":"Delete seccessful!"})
+        return Response({"data":"Delete successful!"})
 
 
 class RegisterViewSet(viewsets.ModelViewSet):
+    permission_classes = [RegisterPermission,]
     queryset = User.objects.all()
     serializer_class = RegisterSerializer
 
